@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1057864275024",
+    "firebase_url": "https://chatmsg-62955-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "chatmsg-62955",
+    "storage_bucket": "chatmsg-62955.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057864275024:android:0aa3c870bb49c5503eed55",
+        "android_client_info": {
+          "package_name": "com.example.chat_msg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBykSRZO9eom2o_C6jgnPYyGH2KO-d8XGI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
