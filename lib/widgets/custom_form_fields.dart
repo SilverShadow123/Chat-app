@@ -6,16 +6,17 @@ class CustomFormFields extends StatelessWidget {
   final RegExp validationRegEx;
   final bool obscureText;
   final void Function(String?) onSaved;
+  final IconData? icon; // New icon parameter
 
-  const CustomFormFields(
-      {super.key,
-      required this.hintText,
-      required this.height,
-      required this.validationRegEx,
-        this.obscureText=false,
-        required this.onSaved,
-
-      });
+  const CustomFormFields({
+    Key? key,
+    required this.hintText,
+    required this.height,
+    required this.validationRegEx,
+    this.obscureText = false,
+    required this.onSaved,
+    this.icon,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +31,17 @@ class CustomFormFields extends StatelessWidget {
           }
           return "Enter a valid ${hintText.toLowerCase()}";
         },
-        decoration:
-            InputDecoration(hintText: hintText, border: const OutlineInputBorder()),
+        decoration: InputDecoration(
+          prefixIcon: icon != null ? Icon(icon, color: Colors.blueAccent) : null,
+          hintText: hintText,
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide.none,
+          ),
+        ),
       ),
     );
   }

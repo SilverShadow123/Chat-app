@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 class NavigationService{
   late GlobalKey<NavigatorState>_navigatorkey;
   final Map<String, Widget Function(BuildContext)>_routes={
-    '/login':(context)=>LoginPage(),
-    '/register':(context)=>RegisterPage(),
-    '/home':(context)=>HomePage(),
+    '/login':(context)=>const LoginPage(),
+    '/register':(context)=>const RegisterPage(),
+    '/home':(context)=>const HomePage(),
   };
   GlobalKey<NavigatorState>? get navigatorKey {
     return _navigatorkey;

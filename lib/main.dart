@@ -1,8 +1,6 @@
-import 'package:chat_msg/pages/login_page.dart';
 import 'package:chat_msg/services/auth_service.dart';
 import 'package:chat_msg/services/navigation_service.dart';
 import 'package:chat_msg/utils.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 void main() async{

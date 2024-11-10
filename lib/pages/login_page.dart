@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -23,7 +23,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _authService = _getIt.get<AuthService>();
     _navigationService = _getIt.get<NavigationService>();
@@ -33,115 +32,156 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: buildUI(context),
-    );
-  }
-
-  Widget buildUI(BuildContext context) {
-    return SingleChildScrollView(
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: MediaQuery.sizeOf(context).width,
+      body: Stack(
+        children: [
+          // Gradient background
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF0D47A1), Color(0xFF1976D2), Color(0xFF42A5F5)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+          // Login UI
+          Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      'Hi, Welcome Back!',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Hello again, you have been missed',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-                    ),
-                    Container(
-                      height: MediaQuery.sizeOf(context).height * 0.40,
-                      margin: EdgeInsets.symmetric(
-                        vertical: MediaQuery.sizeOf(context).height * 0.05,
+                    // Welcome Text
+                    const Text(
+                      'Welcome Back!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                      child: Form(
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'We missed you!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Card with Login Form
+                    Card(
+                      elevation: 8,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Form(
                           key: _loginFormKey,
                           child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
+                              // Email Field
                               CustomFormFields(
                                 hintText: 'Email',
-                                height: MediaQuery.sizeOf(context).height * 0.1,
+                                icon: Icons.email_outlined,
+                                height: 60,
                                 validationRegEx: EMAIL_VALIDATION_REGEX,
-                                onSaved: (value) {
-                                  setState(() {
-                                    email = value;
-                                  });
-                                },
+                                onSaved: (value) => email = value,
                               ),
+                              const SizedBox(height: 15),
+                              // Password Field
                               CustomFormFields(
                                 hintText: 'Password',
-                                height: MediaQuery.sizeOf(context).height * 0.1,
-                                validationRegEx: PASSWORD_VALIDATION_REGEX,
+                                icon: Icons.lock_outline,
+                                height: 60,
                                 obscureText: true,
-                                onSaved: (value) {
-                                  setState(() {
-                                    password = value;
-                                  });
-                                },
+                                validationRegEx: PASSWORD_VALIDATION_REGEX,
+                                onSaved: (value) => password = value,
                               ),
+                              const SizedBox(height: 25),
+
+                              // Login Button
                               SizedBox(
-                                width: MediaQuery.sizeOf(context).width,
-                                child: MaterialButton(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF1976D2),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
                                   onPressed: () async {
                                     if (_loginFormKey.currentState
-                                            ?.validate() ??
+                                        ?.validate() ??
                                         false) {
                                       _loginFormKey.currentState?.save();
-                                      bool reasult = await _authService.login(
-                                          email!, password!);
-                                      if (reasult) {
+                                      bool result = await _authService
+                                          .login(email!, password!);
+                                      if (result) {
                                         _navigationService
                                             .pushReplacementNamed("/home");
                                       } else {
-                                        _alertService.showToast(text: 'Failed to login, Please try again!',icon: Icons.error_outline);
+                                        _alertService.showToast(
+                                          text:
+                                          'Failed to login, Please try again!',
+                                        );
                                       }
                                     }
                                   },
-                                  color: Colors.blue,
-                                  child: Text(
+                                  child: const Text(
                                     'Login',
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
                                   ),
                                 ),
-                              )
+                              ),
+                              const SizedBox(height: 15),
                             ],
-                          )),
+                          ),
+                        ),
+                      ),
                     ),
-                    BottomAppBar(
-                        child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    const SizedBox(height: 20),
+
+                    // Register Link
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Dont ya have an account? '),
+                        const Text(
+                          "Don't have an account? ",
+                          style: TextStyle(color: Colors.white70),
+                        ),
                         GestureDetector(
-                          onTap: (){
-                            _navigationService.pushNamed('/register');
-                          },
-                            child: Text('Sign Up')),
+                          onTap: () =>
+                              _navigationService.pushNamed('/register'),
+                          child: const Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
                       ],
-                    ))
+                    ),
                   ],
                 ),
-              )
-            ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

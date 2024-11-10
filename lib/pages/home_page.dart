@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Messages'),
+        title: const Text('Messages'),
         actions: [
           IconButton(
               onPressed: () async {
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                   _navigationService.pushReplacementNamed('/login');
                 }
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.logout,
                 color: Colors.red,
               ))
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildUI() {
     return SafeArea(
         child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
       child: _chatsList(),
     ));
   }

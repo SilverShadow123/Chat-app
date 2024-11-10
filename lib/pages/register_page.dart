@@ -13,15 +13,19 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  const RegisterPage({Key? key}) : super(key: key);
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final GlobalKey<FormState> _registerFormKey = GlobalKey();
+  String? email, password, name;
+  File? selectedImage;
+  bool isLoading = false;
+
   final GetIt _getIt = GetIt.instance;
-  final GlobalKey<FormState> _registerFormkey = GlobalKey();
   late AuthService _authService;
   late MediaService _mediaService;
   late NavigationService _navigationService;
@@ -29,16 +33,12 @@ class _RegisterPageState extends State<RegisterPage> {
   late AlertService _alertService;
   late DatabaseService _databaseService;
 
-  String? email, password, name;
-  File? selectedImage;
-  bool isLoading = false;
-
   @override
   void initState() {
     super.initState();
+    _authService = _getIt.get<AuthService>();
     _mediaService = _getIt.get<MediaService>();
     _navigationService = _getIt.get<NavigationService>();
-    _authService = _getIt.get<AuthService>();
     _storageService = _getIt.get<StorageService>();
     _databaseService = _getIt.get<DatabaseService>();
     _alertService = _getIt.get<AlertService>();
@@ -47,176 +47,191 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: _buildUI(),
-    );
-  }
-
-  Widget _buildUI() {
-    return SafeArea(
-        child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-            child: Column(children: [
-              headerText(),
-              if (!isLoading) _registerForm(),
-              if (!isLoading) bottomLogin(),
-              if (isLoading)
-                const Expanded(
-                    child: Center(
-                  child: CircularProgressIndicator(),
-                ))
-            ])));
-  }
-
-  Widget headerText() {
-    return SizedBox(
-      width: MediaQuery.sizeOf(context).width,
-      child: Column(
+      body: Stack(
         children: [
-          Text(
-            'Lets Get Going',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          // Gradient background
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF0D47A1), Color(0xFF1976D2), Color(0xFF42A5F5)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
           ),
-          Text(
-            'Register an account using the form below',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+          // Register UI
+          Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Welcome Text
+                    const Text(
+                      'Lets Get Going',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Register an account using the form below',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Card with Registration Form
+                    Card(
+                      elevation: 8,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Form(
+                          key: _registerFormKey,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Profile Image Selection
+                              GestureDetector(
+                                onTap: () async {
+                                  File? file = await _mediaService.getImageFromGallery();
+                                  if (file != null) {
+                                    setState(() {
+                                      selectedImage = file;
+                                    });
+                                  }
+                                },
+                                child: CircleAvatar(
+                                  radius: 60,
+                                  backgroundColor: Colors.blueAccent.withOpacity(0.1),
+                                  child: CircleAvatar(
+                                    radius: 55,
+                                    backgroundImage: selectedImage != null
+                                        ? FileImage(selectedImage!)
+                                        : NetworkImage(PLACEHOLDER_PFP) as ImageProvider,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              // Name Field
+                              CustomFormFields(
+                                hintText: 'Name',
+                                icon: Icons.person_outline,
+                                height: 60,
+                                validationRegEx: NAME_VALIDATION_REGEX,
+                                onSaved: (value) => name = value,
+                              ),
+                              const SizedBox(height: 15),
+                              // Email Field
+                              CustomFormFields(
+                                hintText: 'Email',
+                                icon: Icons.email_outlined,
+                                height: 60,
+                                validationRegEx: EMAIL_VALIDATION_REGEX,
+                                onSaved: (value) => email = value,
+                              ),
+                              const SizedBox(height: 15),
+                              // Password Field
+                              CustomFormFields(
+                                hintText: 'Password',
+                                icon: Icons.lock_outline,
+                                height: 60,
+                                obscureText: true,
+                                validationRegEx: PASSWORD_VALIDATION_REGEX,
+                                onSaved: (value) => password = value,
+                              ),
+                              const SizedBox(height: 25),
+
+                              // Register Button
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF1976D2),
+                                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    if (_registerFormKey.currentState?.validate() ?? false &&
+                                        selectedImage != null) {
+                                      _registerFormKey.currentState?.save();
+                                      bool result = await _authService.signup(email!, password!);
+                                      if (result) {
+                                        String? pfpURL = await _storageService.uploadUserPfp(file: selectedImage!, uid: _authService.user!.uid);
+                                        if (pfpURL != null) {
+                                          await _databaseService.createUserProfile(userProfile: UserProfile(uid: _authService.user!.uid, name: name, pfpURL: pfpURL));
+                                          _alertService.showToast(text: 'User registered successfully!', icon: Icons.check_box_outlined);
+                                          _navigationService.goBack();
+                                          _navigationService.pushReplacementNamed('/home');
+                                        } else {
+                                          _alertService.showToast(text: 'Failed to upload profile picture', icon: Icons.error_outline);
+                                        }
+                                      } else {
+                                        _alertService.showToast(text: 'Registration failed, please try again!', icon: Icons.error_outline);
+                                      }
+                                    }
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                  },
+                                  child: isLoading
+                                      ? const CircularProgressIndicator(color: Colors.white)
+                                      : const Text(
+                                    'Register',
+                                    style: TextStyle(color: Colors.white, fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Login Link
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Already have an account? ",
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                        GestureDetector(
+                          onTap: () => _navigationService.pushNamed('/login'),
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _registerForm() {
-    return Container(
-      height: MediaQuery.sizeOf(context).height * 0.60,
-      margin: EdgeInsets.symmetric(
-        vertical: MediaQuery.sizeOf(context).height * 0.05,
-      ),
-      child: Form(
-          key: _registerFormkey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              pfpSelectionField(),
-              customFields(),
-              _registerButton(),
-            ],
-          )),
-    );
-  }
-
-  Widget bottomLogin() {
-    return BottomAppBar(
-        child: Row(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('Alredy have an account? '),
-        GestureDetector(
-            onTap: () {
-              _navigationService.goBack();
-            },
-            child: Text('Login')),
-      ],
-    ));
-  }
-
-  Widget customFields() {
-    return Column(
-      children: [
-        CustomFormFields(
-            hintText: 'Name',
-            height: MediaQuery.sizeOf(context).height * 0.1,
-            validationRegEx: NAME_VALIDATION_REGEX,
-            onSaved: (value) {
-              setState(() {
-                name = value;
-              });
-            }),
-        CustomFormFields(
-            hintText: 'Email',
-            height: MediaQuery.sizeOf(context).height * 0.1,
-            validationRegEx: EMAIL_VALIDATION_REGEX,
-            onSaved: (value) {
-              setState(() {
-                email = value;
-              });
-            }),
-        CustomFormFields(
-            hintText: 'Password',
-            height: MediaQuery.sizeOf(context).height * 0.1,
-            validationRegEx: PASSWORD_VALIDATION_REGEX,
-            obscureText: true,
-            onSaved: (value) {
-              setState(() {
-                password = value;
-              });
-            }),
-      ],
-    );
-  }
-
-  Widget pfpSelectionField() {
-    return GestureDetector(
-      onTap: () async {
-        File? file = await _mediaService.getImageFromGallery();
-        if (file != null) {
-          setState(() {
-            selectedImage = file;
-          });
-        }
-      },
-      child: CircleAvatar(
-        radius: MediaQuery.of(context).size.width * 0.15,
-        backgroundImage: selectedImage != null
-            ? FileImage(selectedImage!)
-            : NetworkImage(PLACEHOLDER_PFP) as ImageProvider,
-      ),
-    );
-  }
-
-  Widget _registerButton() {
-    return SizedBox(
-      width: MediaQuery.sizeOf(context).width,
-      child: MaterialButton(
-        color: Colors.blue,
-        onPressed: () async {
-          setState(() {
-            isLoading = true;
-          });
-          try {
-            if ((_registerFormkey.currentState?.validate() ?? false) &&
-                selectedImage != null) {
-              _registerFormkey.currentState?.save();
-              bool result = await _authService.signup(email!, password!);
-              if (result) {
-                String? pfpURL = await _storageService.uploadUserPfp(file: selectedImage!, uid: _authService.user!.uid);
-                if(pfpURL!=null){
-                  await _databaseService.createUserProfile(userProfile: UserProfile(uid: _authService.user!.uid, name: name, pfpURL: pfpURL));
-                  _alertService.showToast(text: 'User registered successfully!',icon: Icons.check_box_outlined);
-                  _navigationService.goBack();
-                  _navigationService.pushReplacementNamed('/home');
-                }else{
-                  throw Exception('Unable to upload user profile picture');
-                }
-              }else{
-                throw Exception('Unable to register user');
-              }
-
-              print(result);
-            }
-          } catch (e) {
-            _alertService.showToast(text: 'Failed to register, Please try again!',icon: Icons.error_outline);
-          }
-          setState(() {
-            isLoading = false;
-          });
-        },
-        child: Text(
-          'Register',
-        ),
       ),
     );
   }

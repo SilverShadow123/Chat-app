@@ -22,7 +22,7 @@ class AlertService {
             return ToastCard(
                 leading: Icon(icon, size: 28),
                 title: Text(text,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 14,
                     ),
