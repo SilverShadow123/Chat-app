@@ -34,7 +34,6 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Stack(
         children: [
-          // Gradient background
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -53,7 +52,6 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Welcome Text
                     const Text(
                       'Welcome Back!',
                       textAlign: TextAlign.center,
@@ -107,7 +105,6 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               const SizedBox(height: 25),
 
-                              // Login Button
                               SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(
@@ -154,7 +151,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Register Link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

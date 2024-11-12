@@ -6,7 +6,7 @@ class CustomFormFields extends StatelessWidget {
   final RegExp validationRegEx;
   final bool obscureText;
   final void Function(String?) onSaved;
-  final IconData? icon; // New icon parameter
+  final IconData? icon;
 
   const CustomFormFields({
     Key? key,

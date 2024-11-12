@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:chat_msg/const.dart';
 import 'package:chat_msg/models/user_profile.dart';
 import 'package:chat_msg/services/alert_service.dart';
@@ -49,11 +48,14 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       body: Stack(
         children: [
-          // Gradient background
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF0D47A1), Color(0xFF1976D2), Color(0xFF42A5F5)],
+                colors: [
+                  Color(0xFF0D47A1),
+                  Color(0xFF1976D2),
+                  Color(0xFF42A5F5)
+                ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -68,7 +70,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Welcome Text
                     const Text(
                       'Lets Get Going',
                       textAlign: TextAlign.center,
@@ -88,8 +89,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(height: 30),
-
-                    // Card with Registration Form
                     Card(
                       elevation: 8,
                       shape: RoundedRectangleBorder(
@@ -102,10 +101,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Profile Image Selection
                               GestureDetector(
                                 onTap: () async {
-                                  File? file = await _mediaService.getImageFromGallery();
+                                  File? file =
+                                      await _mediaService.getImageFromGallery();
                                   if (file != null) {
                                     setState(() {
                                       selectedImage = file;
@@ -114,17 +113,18 @@ class _RegisterPageState extends State<RegisterPage> {
                                 },
                                 child: CircleAvatar(
                                   radius: 60,
-                                  backgroundColor: Colors.blueAccent.withOpacity(0.1),
+                                  backgroundColor:
+                                      Colors.blueAccent.withOpacity(0.1),
                                   child: CircleAvatar(
                                     radius: 55,
                                     backgroundImage: selectedImage != null
                                         ? FileImage(selectedImage!)
-                                        : NetworkImage(PLACEHOLDER_PFP) as ImageProvider,
+                                        : NetworkImage(PLACEHOLDER_PFP)
+                                            as ImageProvider,
                                   ),
                                 ),
                               ),
                               const SizedBox(height: 30),
-                              // Name Field
                               CustomFormFields(
                                 hintText: 'Name',
                                 icon: Icons.person_outline,
@@ -133,7 +133,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                 onSaved: (value) => name = value,
                               ),
                               const SizedBox(height: 15),
-                              // Email Field
                               CustomFormFields(
                                 hintText: 'Email',
                                 icon: Icons.email_outlined,
@@ -142,7 +141,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                 onSaved: (value) => email = value,
                               ),
                               const SizedBox(height: 15),
-                              // Password Field
                               CustomFormFields(
                                 hintText: 'Password',
                                 icon: Icons.lock_outline,
@@ -152,14 +150,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                 onSaved: (value) => password = value,
                               ),
                               const SizedBox(height: 25),
-
-                              // Register Button
                               SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF1976D2),
-                                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16.0),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
@@ -168,22 +165,43 @@ class _RegisterPageState extends State<RegisterPage> {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    if (_registerFormKey.currentState?.validate() ?? false &&
-                                        selectedImage != null) {
+                                    if (_registerFormKey.currentState
+                                            ?.validate() ??
+                                        false && selectedImage != null) {
                                       _registerFormKey.currentState?.save();
-                                      bool result = await _authService.signup(email!, password!);
+                                      bool result = await _authService.signup(
+                                          email!, password!);
                                       if (result) {
-                                        String? pfpURL = await _storageService.uploadUserPfp(file: selectedImage!, uid: _authService.user!.uid);
+                                        String? pfpURL =
+                                            await _storageService.uploadUserPfp(
+                                                file: selectedImage!,
+                                                uid: _authService.user!.uid);
                                         if (pfpURL != null) {
-                                          await _databaseService.createUserProfile(userProfile: UserProfile(uid: _authService.user!.uid, name: name, pfpURL: pfpURL));
-                                          _alertService.showToast(text: 'User registered successfully!', icon: Icons.check_box_outlined);
+                                          await _databaseService
+                                              .createUserProfile(
+                                                  userProfile: UserProfile(
+                                                      uid: _authService
+                                                          .user!.uid,
+                                                      name: name,
+                                                      pfpURL: pfpURL));
+                                          _alertService.showToast(
+                                              text:
+                                                  'User registered successfully!',
+                                              icon: Icons.check_box_outlined);
                                           _navigationService.goBack();
-                                          _navigationService.pushReplacementNamed('/home');
+                                          _navigationService
+                                              .pushReplacementNamed('/home');
                                         } else {
-                                          _alertService.showToast(text: 'Failed to upload profile picture', icon: Icons.error_outline);
+                                          _alertService.showToast(
+                                              text:
+                                                  'Failed to upload profile picture',
+                                              icon: Icons.error_outline);
                                         }
                                       } else {
-                                        _alertService.showToast(text: 'Registration failed, please try again!', icon: Icons.error_outline);
+                                        _alertService.showToast(
+                                            text:
+                                                'Registration failed, please try again!',
+                                            icon: Icons.error_outline);
                                       }
                                     }
                                     setState(() {
@@ -191,11 +209,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                     });
                                   },
                                   child: isLoading
-                                      ? const CircularProgressIndicator(color: Colors.white)
+                                      ? const CircularProgressIndicator(
+                                          color: Colors.white)
                                       : const Text(
-                                    'Register',
-                                    style: TextStyle(color: Colors.white, fontSize: 18),
-                                  ),
+                                          'Register',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18),
+                                        ),
                                 ),
                               ),
                             ],
@@ -204,8 +225,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    // Login Link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

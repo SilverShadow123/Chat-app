@@ -26,6 +26,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       navigatorKey: _navigationService.navigatorKey,
       initialRoute:_authService.user != null?'/home' : '/login',
       routes: _navigationService.routes,
