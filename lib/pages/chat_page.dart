@@ -11,7 +11,6 @@ import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-
 import '../models/chat.dart';
 
 class ChatPage extends StatefulWidget {

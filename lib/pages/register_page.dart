@@ -88,6 +88,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         color: Colors.white70,
                       ),
                     ),
+                    const Text(
+                      'You have to fill up all the form to register including profile picture',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                      ),
+                    ),
                     const SizedBox(height: 30),
                     Card(
                       elevation: 8,
@@ -142,7 +150,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               const SizedBox(height: 15),
                               CustomFormFields(
-                                hintText: 'Password',
+                                hintText: 'Password Ex:Test123!',
                                 icon: Icons.lock_outline,
                                 height: 60,
                                 obscureText: true,
@@ -156,7 +164,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF1976D2),
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 16.0),
+                                      vertical: 16.0,
+                                    ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
@@ -179,11 +188,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                         if (pfpURL != null) {
                                           await _databaseService
                                               .createUserProfile(
-                                                  userProfile: UserProfile(
-                                                      uid: _authService
-                                                          .user!.uid,
-                                                      name: name,
-                                                      pfpURL: pfpURL));
+                                            userProfile: UserProfile(
+                                              uid: _authService.user!.uid,
+                                              name: name,
+                                              pfpURL: pfpURL,
+                                            ),
+                                          );
                                           _alertService.showToast(
                                               text:
                                                   'User registered successfully!',
@@ -210,12 +220,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                   },
                                   child: isLoading
                                       ? const CircularProgressIndicator(
-                                          color: Colors.white)
+                                          color: Colors.white,
+                                        )
                                       : const Text(
                                           'Register',
                                           style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18),
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                          ),
                                         ),
                                 ),
                               ),
