@@ -114,9 +114,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                   File? file =
                                       await _mediaService.getImageFromGallery();
                                   if (file != null) {
-                                    setState(() {
-                                      selectedImage = file;
-                                    });
+                                    setState(
+                                      () {
+                                        selectedImage = file;
+                                      },
+                                    );
                                   }
                                 },
                                 child: CircleAvatar(
@@ -195,23 +197,26 @@ class _RegisterPageState extends State<RegisterPage> {
                                             ),
                                           );
                                           _alertService.showToast(
-                                              text:
-                                                  'User registered successfully!',
-                                              icon: Icons.check_box_outlined);
+                                            text:
+                                                'User registered successfully!',
+                                            icon: Icons.check_box_outlined,
+                                          );
                                           _navigationService.goBack();
                                           _navigationService
                                               .pushReplacementNamed('/home');
                                         } else {
                                           _alertService.showToast(
-                                              text:
-                                                  'Failed to upload profile picture',
-                                              icon: Icons.error_outline);
+                                            text:
+                                                'Failed to upload profile picture',
+                                            icon: Icons.error_outline,
+                                          );
                                         }
                                       } else {
                                         _alertService.showToast(
-                                            text:
-                                                'Registration failed, please try again!',
-                                            icon: Icons.error_outline);
+                                          text:
+                                              'Registration failed, please try again!',
+                                          icon: Icons.error_outline,
+                                        );
                                       }
                                     }
                                     setState(() {

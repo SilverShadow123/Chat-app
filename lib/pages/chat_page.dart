@@ -133,19 +133,21 @@ class _ChatPageState extends State<ChatPage> {
     if (chatMessage.medias?.isNotEmpty ?? false) {
       if (chatMessage.medias!.first.type == MediaType.image) {
         Message message = Message(
-            senderID: chatMessage.user.id,
-            content: chatMessage.medias!.first.url,
-            messageType: MessageType.Image,
-            sentAt: Timestamp.fromDate(chatMessage.createdAt));
+          senderID: chatMessage.user.id,
+          content: chatMessage.medias!.first.url,
+          messageType: MessageType.Image,
+          sentAt: Timestamp.fromDate(chatMessage.createdAt),
+        );
         await _databaseService.sendChatMessage(
             currentUser!.id, otherUser!.id, message);
       }
     } else {
       Message message = Message(
-          senderID: currentUser!.id,
-          content: chatMessage.text,
-          messageType: MessageType.Text,
-          sentAt: Timestamp.fromDate(chatMessage.createdAt));
+        senderID: currentUser!.id,
+        content: chatMessage.text,
+        messageType: MessageType.Text,
+        sentAt: Timestamp.fromDate(chatMessage.createdAt),
+      );
       await _databaseService.sendChatMessage(
           currentUser!.id, otherUser!.id, message);
     }

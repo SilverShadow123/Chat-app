@@ -72,7 +72,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 30),
 
-                    // Card with Login Form
                     Card(
                       elevation: 8,
                       shape: RoundedRectangleBorder(
@@ -111,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF1976D2),
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 16.0),
+                                        vertical: 16.0,),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),

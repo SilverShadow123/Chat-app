@@ -47,7 +47,11 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text(
           'Messages',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24, color: Colors.white),
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
+            color: Colors.white,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -64,13 +68,118 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () async {
-              bool result = await _authService.logout();
-              if (result) {
-                _alertService.showToast(
-                  text: 'Successfully logged out!',
-                  icon: Icons.check_box_outlined,
-                );
-                _navigationService.pushReplacementNamed('/login');
+              final shouldLogout = await showDialog<bool>(
+                context: context,
+                builder: (BuildContext context) {
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 15),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.white, Colors.blue[50]!],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.warning_amber_rounded,
+                            size: 50,
+                            color: Colors.orangeAccent,
+                          ),
+                          const SizedBox(height: 15),
+                          const Text(
+                            "Log Out",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            "Are you sure you want to log out?",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(false);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor: Colors.grey[300],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "No",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(true);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor: Colors.redAccent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Yes",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+
+              if (shouldLogout == true) {
+                bool result = await _authService.logout();
+                if (result) {
+                  _alertService.showToast(
+                    text: 'Successfully logged out!',
+                    icon: Icons.check_box_outlined,
+                  );
+                  _navigationService.pushReplacementNamed('/login');
+                }
               }
             },
             icon: const Icon(
@@ -122,11 +231,12 @@ class _HomePageState extends State<HomePage> {
           );
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: Colors.blueAccent));
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.blueAccent),
+          );
         }
         if (snapshot.hasData && snapshot.data != null) {
           final users = snapshot.data!.docs;
-          // Filter users based on search query
           final filteredUsers = users.where((userDoc) {
             final user = userDoc.data();
             final userName = user.name!.toLowerCase();
@@ -151,7 +261,8 @@ class _HomePageState extends State<HomePage> {
                     child: ChatTile(
                       userProfile: user,
                       onTap: () async {
-                        final chatExists = await _databaseService.checkChatExists(
+                        final chatExists =
+                            await _databaseService.checkChatExists(
                           _authService.user!.uid,
                           user.uid!,
                         );
@@ -161,9 +272,11 @@ class _HomePageState extends State<HomePage> {
                             user.uid!,
                           );
                         }
-                        _navigationService.push(MaterialPageRoute(
-                          builder: (context) => ChatPage(chatUser: user),
-                        ));
+                        _navigationService.push(
+                          MaterialPageRoute(
+                            builder: (context) => ChatPage(chatUser: user),
+                          ),
+                        );
                       },
                     ),
                   ),
