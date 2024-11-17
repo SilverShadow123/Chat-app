@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   late AlertService _alertService;
   late DatabaseService _databaseService;
 
+  bool _isDarkMode = false;
   String _searchText = "";
 
   @override
@@ -34,6 +35,12 @@ class _HomePageState extends State<HomePage> {
     _databaseService = _getIt.get<DatabaseService>();
   }
 
+  void _toggleDarkMode() {
+    setState(() {
+      _isDarkMode = !_isDarkMode;
+    });
+  }
+
   void _onSearchTextChanged(String searchText) {
     setState(() {
       _searchText = searchText;
@@ -43,7 +50,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text(
           'Messages',
@@ -57,15 +63,25 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF42A5F5), Color(0xFF1976D2)],
+              colors: [
+                _isDarkMode ? Colors.grey[850]! : Colors.blue[400]!,
+                _isDarkMode ? Colors.black : Colors.blue[50]!,
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
         ),
         actions: [
+          IconButton(
+            onPressed: _toggleDarkMode,
+            icon: Icon(
+              _isDarkMode ? Icons.brightness_7 : Icons.brightness_3,
+              color: Colors.white,
+            ),
+          ),
           IconButton(
             onPressed: () async {
               final shouldLogout = await showDialog<bool>(
@@ -118,8 +134,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(false);
+                                  Navigator.of(context).pop(false);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
@@ -141,8 +156,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(true);
+                                  Navigator.of(context).pop(true);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
@@ -196,7 +210,10 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue[100]!, Colors.blue[50]!],
+            colors: [
+              _isDarkMode ? Colors.grey[850]! : Colors.blue[100]!,
+              _isDarkMode ? Colors.black : Colors.blue[50]!,
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
