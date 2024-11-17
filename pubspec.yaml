@@ -48,9 +48,18 @@ dependencies:
   path: ^1.9.0
   flutter_native_splash: ^2.4.2
 
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/ic_launcher.png"
+  min_sdk_android: 21
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.1
 
 
 
@@ -125,7 +134,7 @@ flutter_native_splash:
 
   # The image parameter allows you to specify an image used in the splash screen.  It must be a
   # png file and should be sized for 4x pixel density.
-  image: "assets/b13c480a48717bbac0fbad59b08500214ef115da-removebg-preview.png"
+  image: "assets/ic_launcher.png"
 
   # The branding property allows you to specify an image used as branding in the splash screen.
   # It must be a png file. It is supported for Android, iOS and the Web.  For Android 12,
@@ -162,7 +171,7 @@ flutter_native_splash:
     # 768 pixels in diameter.  To fit a 1152x1152 image within a circle with a 768 diameter, simply
     # ensure that the most important design elements of your image are placed within a circular area
     # with a 768 diameter at the center of the 1152x1152 canvas.
-    image: "assets/b13c480a48717bbac0fbad59b08500214ef115da-removebg-preview.png"
+    image: "assets/ic_launcher.png"
 
     # Splash screen background color.
     #color: "#3a9cee"
